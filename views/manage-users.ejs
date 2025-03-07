@@ -1,0 +1,71 @@
+
+        <%- include('layouts/header') %>
+
+            <table id="usersTable" class="table table-bordered table-striped mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <a href="/admin/add-user" class="btn btn-warning btn-sm">Add user</a>
+            <%- include('layouts/footer') %>
+
+                <script>
+                    $(document).ready(function () {
+                        if (!$.fn.dataTable.isDataTable('#usersTable')){
+                        $('#usersTable').DataTable({
+                            "processing": true,
+                            "serverSide": true,
+                            "ajax": "/admin/users/data",
+                            "columns": [
+                                { "data": "id" },
+                                {
+                                    "data": "email",
+                                    "render": function (data, type, row) {
+                                        return `<a href="/admin/user/${row.id}">${data}</a>`;
+                                    }
+                                },
+                                {
+                                    "data": "role",
+                                    "render": function (data, type, row) {
+                         return `<form action="/admin/update-role" method="post" class="d-flex">
+                         <input type="hidden" name="id" value="${row.id}" />
+                        <select name="role" class="form-select form-select-sm me-2">
+                             <option value="ADMIN" ${data === 'ADMIN' ? 'selected' : ''}>Admin</option>
+                                    <option value="MODERATOR" ${data === 'MODERATOR' ? 'selected' : ''}>Moderator</option>
+                                    <option value="CLIENT" ${data === 'CLIENT' ? 'selected' : ''}>Client</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                            </form>`;
+                                    }
+                                },
+                                {
+                                    "data": "id",
+                                    "render": function (data) {
+                                        return `<form action="/admin/delete-user" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <input type="hidden" name="id" value="${data}" />
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>`;
+                                    }
+                                }
+                            ],
+                            "lengthMenu": [10, 25, 50, 100],
+                            "pageLength": 10,
+                            "order": [[0, "desc"]],
+                            "ordering":true,
+                            "scrollY": "400px",
+                            "scrollCollapse": true // Ensures the table shrinks when fewer rows are present
+                //             "dom": 'Bfrtip', // The placement of the buttons
+                // "buttons": [
+                //     'copy', 'csv', 'excel', 'pdf', 'print'  // This will add the export buttons
+                // ]
+                        });
+                    }
+                    });
+                </script>

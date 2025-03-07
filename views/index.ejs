@@ -1,0 +1,62 @@
+<%- include('./layouts/header') %>
+
+<div class="container py-5">
+  <div class="text-center">
+    <h1 class="title fw-bold">Welcome to Our Platform</h1>
+    <p class="subtitle text-muted">Experience seamless role-based access control.</p>
+  </div>
+
+  <div class="welcome-content text-center my-4">
+    <p class="lead">
+      We provide secure authentication and authorization with <strong>Node.js, Express, and EJS</strong>.
+      Enjoy smooth session handling and role-based features.
+    </p>
+
+    <% if (!user) { %>
+      <div class="auth-buttons mt-4">
+        <a href="/auth/login" class="btn btn-primary btn-lg mx-2">Login</a>
+        <a href="/auth/register" class="btn btn-outline-secondary btn-lg mx-2">Sign Up</a>
+      </div>
+    <% } else { %>
+      <div class="user-info my-4">
+        <h4 class="fw-bold">Hello, <%= user.name %>! 👋</h4>
+        <p class="text-muted">You are logged in as <b><%= user.role %></b>.</p>
+        <a href="/tasks" class="btn btn-success btn-lg">Add Task</a>
+      </div>
+
+      <div class="tasks-section mt-5">
+        <h3 class="text-center fw-bold">Your Tasks</h3>
+
+        <% if (tasks.length === 0) { %>
+          <p class="text-muted text-center mt-3">No tasks available. Add one above!</p>
+        <% } else { %>
+          <div class="row justify-content-center mt-4">
+            <% tasks.forEach(task => { %>
+              <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0">
+                  <div class="card-body">
+                    <h5 class="card-title text-primary fw-bold"><%= task.title %></h5>
+                    <p class="card-text text-muted"><%= task.description || "No description provided" %></p>
+                    
+                    <div class="task-meta">
+                      <p class="small mb-1"><strong>Start:</strong> <%= task.startTime ? task.startTime.toLocaleString() : "Not Set" %></p>
+                      <p class="small mb-1"><strong>Due:</strong> <%= task.completionTime ? task.completionTime.toLocaleString() : "Not Set" %></p>
+                      <p class="small mb-2"><strong>Location:</strong> <%= task.location || "Not Specified" %></p>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                      <a href="/tasks/edit/<%= task.id %>" class="btn btn-sm btn-outline-warning">Edit</a>
+                      <a href="/tasks/delete/<%= task.id %>" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('./layouts/footer') %>

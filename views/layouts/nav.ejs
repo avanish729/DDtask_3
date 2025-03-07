@@ -1,0 +1,23 @@
+<nav class="navbar">
+    <h2>ToDo</h2>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <% if (user) { %>
+            <li><a href="/user/profile">Profile</a></li>
+            <li><a href="/tasks">Tasks</a></li>
+
+            <% if (user.role === 'ADMIN' || user.role === 'MODERATOR') { %>
+                <li><a href="/admin/tasks">All Tasks</a></li>
+            <% } %>
+
+            <% if (user.role === 'ADMIN') { %>
+                <li><a href="/admin/users">Manage Users</a></li>
+            <% } %>
+
+            <li><a href="/auth/logout">Logout</a></li>
+        <% } else { %>
+            <li><a href="/auth/register">Register</a></li>
+            <li><a href="/auth/login">Login</a></li>
+        <% } %>
+    </ul>
+</nav>

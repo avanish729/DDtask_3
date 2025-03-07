@@ -1,0 +1,132 @@
+<%- include('layouts/header') %>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">My To-Do List</h2>
+
+    <!-- Task Creation Form -->
+    <div class="card p-4 shadow-sm">
+        <h4 class="mb-3">Add New Task</h4>
+        <form action="/tasks/add" method="POST">
+            <div class="mb-3">
+                <label class="form-label">Title:</label>
+                <input type="text" class="form-control" name="title" placeholder="Enter task title" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Description:</label>
+                <textarea class="form-control" name="description" placeholder="Enter task description"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Start Time:</label>
+                    <input type="datetime-local" class="form-control" name="startTime">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Completion Time:</label>
+                    <input type="datetime-local" class="form-control" name="completionTime">
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <label class="form-label">Location:</label>
+                <select class="form-control" id="locationDropdown" name="location">
+                    <option></option> 
+                </select>
+            </div>
+            
+
+            <button type="submit" class="btn btn-primary mt-3 w-100"> Add Task</button>
+        </form>
+    </div>
+
+    <hr class="my-4">
+
+    <!-- Task List -->
+    <h3 class="text-center mb-3">Your Tasks</h3>
+
+    <% if (tasks.length === 0) { %>
+        <p class="text-muted text-center">No tasks available. Add one above!</p>
+    <% } else { %>
+        <div class="row">
+            <% tasks.forEach(task => { %>
+                <div class="col-md-6 mb-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= task.title %></h5>
+                            <p class="card-text"><%= task.description || "No description provided" %></p>
+                            <p><strong>Start:</strong> <%= task.startTime ? task.startTime.toLocaleString() : "Not Set" %></p>
+                            <p><strong>Due:</strong> <%= task.completionTime ? task.completionTime.toLocaleString() : "Not Set" %></p>
+                            <p><strong>Location:</strong> <%= task.location || "Not Specified" %></p>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="/tasks/edit/<%= task.id %>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="/tasks/delete/<%= task.id %>" class="btn btn-danger btn-sm">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded",function(){
+        fetch("https://gist.githubusercontent.com/anubhavshrimal/4aeb195a743d0cdd1c3806c9c222ed45/raw/")
+        .then(response => response.json())
+        .then(data => {
+
+            let dropdown=document.getElementById("locationDropdown");
+
+            for(let state in data)
+        {
+            data[state].forEach(city=>{
+                let option=document.createElement("option");
+                option.value=`${city},${state}`; 
+                option.textContent=`${city},${state}`;
+                dropdown.appendChild(option);
+            })
+        }
+        })
+        .catch(error => console.error("Error fetching city data:", error));
+    });
+
+
+    $(document).ready(function(){
+        $('#locationDropdown').select2({ placeholder: "Select a location", allowClear: true });
+    })
+
+  
+        // $(document).ready(function () {
+        //     $('#locationDropdown').select2({
+        //         placeholder: "Search for a location",
+        //         allowClear: true,
+        //         ajax: {
+        //             url: "https://gist.githubusercontent.com/anubhavshrimal/4aeb195a743d0cdd1c3806c9c222ed45/raw/",
+        //             dataType: "json",
+        //             delay: 250,
+        //             processResults: function (data) {
+        //                 let locations = [];
+
+        //                 for (let state in data) {
+        //                     data[state].forEach(city => {
+        //                         locations.push({ id: `${city}, ${state}`, text: `${city}, ${state}` });
+        //                     });
+        //                 }
+
+        //                 return {
+        //                     results: locations
+        //                 };
+        //             },
+        //             error: function (xhr, status, error) {
+        //                 console.error("Error fetching locations:", error);
+        //             }
+        //         }
+        //     });
+        // });
+   
+
+
+</script>
+
+<%- include('layouts/footer') %>

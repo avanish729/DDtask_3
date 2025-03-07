@@ -1,0 +1,102 @@
+<%- include('layouts/header') %>
+
+<h2>📋 All Users' Tasks</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Start Time</th>
+            <th>Completion Time</th>
+            <th>Location</th>
+            <th>User</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if (tasks.length === 0) { %>
+            <tr><td colspan="7" class="text-center">No tasks found.</td></tr>
+        <% } else { %>
+            <% tasks.forEach(task => { %>
+                <tr>
+                    <td><%= task.title %></td>
+                    <td><%= task.description || "N/A" %></td>
+                    <td><%= task.startTime ? task.startTime.toLocaleString() : "Not Set" %></td>
+                    <td><%= task.completionTime ? task.completionTime.toLocaleString() : "Not Set" %></td>
+                    <td><%= task.location || "Not Specified" %></td>
+                    <td>
+                        <% if (task.UserSchema) { %>  
+                            <a href="/admin/user/<%= task.UserSchema.id %>">
+                                (<%= task.UserSchema.email %>)
+                            </a>
+                        <% } else { %>
+                            <span class="text-danger">No User Assigned</span>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (task.UserSchema) { %>  
+                         
+                            <span class="text-muted"><%= task.UserSchema.role || "Not Assigned" %></span>
+                        <% } else { %>
+                            <span class="text-danger">No User Assigned</span>
+                        <% } %>
+                    </td>
+                    
+                    <td>
+                        <a href="/tasks/admin/edit/<%= task.id %>" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="/tasks/admin/delete/<%= task.id %>" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                    
+                </tr>
+            <% }) %>
+        <% } %>
+    </tbody>
+</table>
+
+<!-- <div class="pagination-container text-center">
+    <ul class="pagination justify-content-center">
+        <% if (currentPage > 1) { %>
+            <li class="page-item">
+                <a class="page-link" href="/tasks?page=<%= currentPage - 1 %>">Previous</a>
+            </li>
+        <% } %>
+
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                <a class="page-link" href="/tasks?page=<%= i %>"><%= i %></a>
+            </li>
+        <% } %>
+
+        <% if (currentPage < totalPages) { %>
+            <li class="page-item">
+                <a class="page-link" href="/tasks?page=<%= currentPage + 1 %>">Next</a>
+            </li>
+        <% } %>
+    </ul>
+</div> -->
+
+<nav>
+    <ul class="pagination justify-content-center">
+        <% if (currentPage > 1) { %>
+            <li class="page-item">
+                <a class="page-link" href="/admin/tasks?page=<%= currentPage - 1 %>">Previous</a>
+            </li>
+        <% } %>
+
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="/admin/tasks?page=<%= i %>"><%= i %></a>
+            </li>
+        <% } %>
+
+        <% if (currentPage < totalPages) { %>
+            <li class="page-item">
+                <a class="page-link" href="/admin/tasks?page=<%= currentPage + 1 %>">Next</a>
+            </li>
+        <% } %>
+    </ul>
+</nav>
+
+<%- include('layouts/footer') %>
